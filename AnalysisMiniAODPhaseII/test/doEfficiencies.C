@@ -30,16 +30,17 @@ TFile*      file_noPU  = NULL;
 
 // Member functions
 //------------------------------------------------------------------------------
-TGraphAsymmErrors* MakeEfficiency(TString variable,
+TGraphAsymmErrors* MakeEfficiency(TString type,
+				  TString variable,
 				  Int_t   PU,
 				  Color_t color);
 
 TGraphAsymmErrors* MakeFakes(TString variable,
-				  Int_t   PU,
-				  Color_t color);
+			     Int_t   PU,
+			     Color_t color);
 
 
-void               DrawEfficiency();
+void               DrawEfficiency(TString variable);
 
 void               DrawFakes();
 
@@ -78,8 +79,9 @@ void doEfficiencies()
 
   // Do the work
   //----------------------------------------------------------------------------
-  DrawEfficiency();
-
+  //  DrawEfficiency("vr");
+  //DrawEfficiency("pt");
+  DrawEfficiency("eta");
   DrawFakes();
 
 
@@ -148,7 +150,8 @@ TGraphAsymmErrors* MakeFakes(TString variable,
   return tgae;
 }
 
-TGraphAsymmErrors* MakeEfficiency(TString variable,
+TGraphAsymmErrors* MakeEfficiency(TString type,
+				  TString variable,
 				  Int_t   PU,
 				  Color_t color)
 {
@@ -156,8 +159,10 @@ TGraphAsymmErrors* MakeEfficiency(TString variable,
 
   Style_t style = (PU == noPU) ? kOpenCircle : kFullCircle;
 
-  TString num_name = "muonAnalysis/" + variable + "Muons_vr";
-  TString den_name = "muonAnalysis/GenMuons_vr";
+  TString num_name = "muonAnalysis/" + type + "Muons_" + variable;
+  TString den_name = "muonAnalysis/GenMuons_" + variable;
+
+  std::cout << num_name << "  " << den_name << std::endl;
 
   TH1F* hnum = (TH1F*)(file->Get(num_name))->Clone("hnum");
   TH1F* hden = (TH1F*)(file->Get(den_name))->Clone("hden");
@@ -180,17 +185,17 @@ TGraphAsymmErrors* MakeEfficiency(TString variable,
 // Draw efficiency
 //
 //------------------------------------------------------------------------------
-void DrawEfficiency()
+void DrawEfficiency(TString variable)
 {
-  TGraphAsymmErrors* sta_efficiency = MakeEfficiency("Sta", PU200, kBlack);
-  TGraphAsymmErrors* trk_efficiency = MakeEfficiency("Trk", PU200, kRed+1);
-  TGraphAsymmErrors* glb_efficiency = MakeEfficiency("Glb", PU200, kBlue);
-  TGraphAsymmErrors* tight_efficiency = MakeEfficiency("Tight", PU200, kGreen+2);
+  TGraphAsymmErrors* sta_efficiency = MakeEfficiency("Sta", variable , PU200, kBlack);
+  TGraphAsymmErrors* trk_efficiency = MakeEfficiency("Trk", variable, PU200, kRed+1);
+  TGraphAsymmErrors* glb_efficiency = MakeEfficiency("Glb", variable, PU200, kBlue);
+  TGraphAsymmErrors* tight_efficiency = MakeEfficiency("Tight", variable, PU200, kGreen+2);
 
-  TGraphAsymmErrors* sta_efficiency_noPU = MakeEfficiency("Sta", noPU, kBlack);
-  TGraphAsymmErrors* trk_efficiency_noPU = MakeEfficiency("Trk", noPU, kRed+1);
-  TGraphAsymmErrors* glb_efficiency_noPU = MakeEfficiency("Glb", noPU, kBlue);
-  TGraphAsymmErrors* tight_efficiency_noPU = MakeEfficiency("Tight", noPU, kGreen+2);
+  TGraphAsymmErrors* sta_efficiency_noPU = MakeEfficiency("Sta", variable, noPU, kBlack);
+  TGraphAsymmErrors* trk_efficiency_noPU = MakeEfficiency("Trk", variable, noPU, kRed+1);
+  TGraphAsymmErrors* glb_efficiency_noPU = MakeEfficiency("Glb", variable, noPU, kBlue);
+  TGraphAsymmErrors* tight_efficiency_noPU = MakeEfficiency("Tight", variable, noPU, kGreen+2);
 
   TCanvas* canvas = new TCanvas("efficiency", "efficiency", 600, 600);
 
@@ -228,7 +233,14 @@ void DrawEfficiency()
 
   // Labels
   mg->SetTitle("");
-  mg->GetXaxis()->SetTitle("production radius [cm]");
+  if (variable == "vr") {
+    mg->GetXaxis()->SetTitle("production radius [cm]");
+  } else if (variable == "pt") {
+    mg->GetXaxis()->SetTitle("pT (GeV)");
+  } else if (variable == "eta") {
+     mg->GetXaxis()->SetTitle("eta");
+  }
+ 
   mg->GetYaxis()->SetTitle("reconstruction efficiency");
   mg->GetXaxis()->SetTitleOffset(1.5);
   mg->GetYaxis()->SetTitleOffset(1.5);
@@ -257,9 +269,29 @@ void DrawEfficiency()
   canvas->Modified();
   canvas->Update();
 
-  if (doSavePdf) canvas->SaveAs("pdf/efficiency.pdf");
-  if (doSavePng) canvas->SaveAs("png/efficiency.png");
+  if (doSavePdf) { 
+    if (variable == "vr") {
+      canvas->SaveAs("pdf/efficiency_vr.pdf");
+  } else if (variable == "pt") {
+      canvas->SaveAs("pdf/efficiency_pt.pdf");
+  } else if (variable == "eta") {
+      canvas->SaveAs("pdf/efficiency_eta.pdf");
+    }
+  }
+    
+  if (doSavePng) {
+    if (variable == "vr") {
+      canvas->SaveAs("png/efficiency_vr.png");
+    } else if (variable == "pt") {
+      canvas->SaveAs("png/efficiency_pt.png");
+    } else if (variable == "eta") {
+      canvas->SaveAs("png/efficiency_eta.png");
+    }
+  }
+
+
 }
+
 
 
 
@@ -345,8 +377,8 @@ void DrawFakes()
   canvas->Modified();
   canvas->Update();
 
-  if (doSavePdf) canvas->SaveAs("pdf/efficiency.pdf");
-  if (doSavePng) canvas->SaveAs("png/efficiency.png");
+  if (doSavePdf) canvas->SaveAs("pdf/fakes.pdf");
+  if (doSavePng) canvas->SaveAs("png/fakes.png");
 }
 
 //------------------------------------------------------------------------------

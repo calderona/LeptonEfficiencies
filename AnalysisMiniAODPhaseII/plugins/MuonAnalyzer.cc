@@ -469,9 +469,9 @@ void ExampleMuonAnalyzer::analyze(const Event& event, const EventSetup& eventSet
 	      if (pt > ptbins[i] && pt < ptbins[i+1]) hTrkMuons_res[i]->Fill(trk_res);
 	  } else {
 
-	  hTrkMuons_noGen_pt->Fill(sta_pt);
+	  hTrkMuons_noGen_pt->Fill(trk_pt);
 	  hTrkMuons_noGen_vr->Fill(vr);
-	  hTrkMuons_noGen_eta->Fill(sta_eta);
+	  hTrkMuons_noGen_eta->Fill(trk_eta);
 	}
 
       }
@@ -513,8 +513,8 @@ void ExampleMuonAnalyzer::analyze(const Event& event, const EventSetup& eventSet
 
 
 
-  }  // for..pruned
-  } 
+  } // for..pruned
+} 
 
 
 
