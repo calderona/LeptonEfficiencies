@@ -79,9 +79,9 @@ void doEfficiencies()
 
   // Do the work
   //----------------------------------------------------------------------------
-  //  DrawEfficiency("vr");
+    DrawEfficiency("vr");
   //DrawEfficiency("pt");
-  DrawEfficiency("eta");
+  //  DrawEfficiency("eta");
   DrawFakes();
 
 
@@ -223,8 +223,6 @@ void DrawEfficiency(TString variable)
       mg->SetMinimum(-0.05);
       mg->SetMaximum( 1.05);
 
-    
-
     }
   //  mg->GetYaxis()->SetRangeUser(0.8, 1.02);
   // Cosmetics
@@ -257,11 +255,11 @@ void DrawEfficiency(TString variable)
   legend->AddEntry(sta_efficiency_noPU, "(no PU) sta",  "lp");
   legend->AddEntry(trk_efficiency_noPU, "(no PU) trk",  "lp");
   legend->AddEntry(glb_efficiency_noPU, "(no PU) glb",  "lp");
-  legend->AddEntry(tight_efficiency_noPU, "(no PU) Medium",  "lp"); 
+  legend->AddEntry(tight_efficiency_noPU, "(no PU) SoftID",  "lp"); 
   legend->AddEntry(sta_efficiency,      "(200 PU) sta", "lp");
   legend->AddEntry(trk_efficiency,      "(200 PU) trk", "lp");
   legend->AddEntry(glb_efficiency,      "(200 PU) glb", "lp");
-  legend->AddEntry(tight_efficiency,      "(200 PU) Medium", "lp");
+  legend->AddEntry(tight_efficiency,      "(200 PU) SoftID", "lp");
 
 
   legend->Draw();

@@ -275,9 +275,13 @@ void ExampleMuonAnalyzer::analyze(const Event& event, const EventSetup& eventSet
 
       // isTightMuon
       //------------------------------------------------------------------------
-      //if (muon::isTightMuon(*muon, thePrimaryVertex)) {
+      if (muon::isTightMuon(*muon, thePrimaryVertex)) {
       //if ( passID) { 
-      if (muon::isMediumMuon(*muon)) {
+      // Test Soft muons:: bool muon::isSoftMuon(const reco::Muon & recoMu, const reco::Vertex & vtx);
+
+      //if ( muon::isSoftMuon(*muon, thePrimaryVertex)) {
+     
+	//if (muon::isMediumMuon(*muon)) {
 	
 	  Float_t muEta    = muon->eta();
 	Float_t muPhi    = muon->phi();
